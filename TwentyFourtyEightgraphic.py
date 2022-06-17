@@ -19,6 +19,10 @@ GameStates;
     a. TBD!
 """
 
+# GLOBAL VARIABLES
+version = "summer2022Graphics"
+
+
 
 def createBoard(win, x1, y1, x2, y2):
     """
@@ -230,6 +234,28 @@ def undrawMenuButtons(menu):
             element.undraw()
 
 
+def drawMenuButtonsLoss(menu, win):
+    """Draw menu buttons for a loss (no resume button)."""
+    for i in range(2):
+        for j in range(5):
+            if j != 4: 
+                menu[i][j].draw(win)
+
+
+
+def undrawMenuButtonsLoss(menu):
+    """Undraw menu buttons for a loss (no resume button)."""
+    for i in range(2):
+        for j in range(5):
+            if j != 4: 
+                menu[i][j].undraw()
+
+
+def createSettingsButtons(win):
+    """TBD!"""
+    pass
+
+
 def checkButtonClick(point, rectangle):
     """Check for a button click."""
     if point != None:
@@ -397,6 +423,31 @@ def main():
     # menu_button is a tuple (rect, text)
     menu_button = createInGameButton(win)
 
+    # Initialize game state trackers
+    loss = 0
+    winners_mode = 0
+    
+    if version == "ics31":
+        valid_inputs = ["w", "a", "s", "d", "q"]
+    if version == "summer2022":
+        # arrow keys follow wasd placement (ex. w = \x1b[A)
+        valid_inputs = ["w", "a", "s", "d", "\x1b[A", "\x1b[D", "\x1b[B", "\x1b[C", "q"]
+    if version == "summer2022Graphics":
+        # arrow keys follow wasd placement (ex. w = \x1b[A)
+        valid_inputs = ["w", "a", "s", "d", "Up", "Left", "Down", "Right", "q"]
+    
+    
+    # main gamestate (in-game)
+    # create substates (but don't draw them yet!)
+        # 1: menu
+    menu = createMenuButtons(win)
+            # 5: resume     (from #2)
+            # 4: new game   (from #2)
+            # 3: settings   (from #2)
+    settings = createSettingsButtons(win)
+            # 2: quit       (from #2)
+
+
     INGAME = 1
 
     while INGAME == 1:
@@ -424,14 +475,6 @@ def main():
         print()
 
 
-        # main gamestate (in-game)
-        # create substates (but don't draw them yet!)
-            # 1: menu
-                # 5: resume     (from #2)
-                # 4: new game   (from #2)
-                # 3: settings   (from #2)
-                # 2: quit       (from #2)
-
         # main loop
         # first print initial game board
         gamestate = 0
@@ -442,13 +485,76 @@ def main():
                 click = win.checkMouse()
                 press = win.checkKey()
                 if checkButtonClick(click, menu_button[0]):
-                    menu = createMenuButtons(win)
                     drawMenuButtons(menu, win)
                     gamestate = 1
                     continue
                 elif checkKeyPress(press):
-                    key = press
-                    # (FINAL PORTION -- ACTUAL GAME IMPLEMENTATION!!): update game then print updated game board
+                    if press in valid_inputs:
+                        # (FINAL PORTION -- ACTUAL GAME IMPLEMENTATION!!): update game then print updated game board
+                        # convert arrow keys -> wasd (preserve code)
+                        if version == "summer2022Graphics":
+                            for i in range(4):
+                                # assigment of arrow key value to wasd value
+                                if press == valid_inputs[i + 4]:
+                                    press = valid_inputs[i]
+                                    break
+                        elif version == "summer2022":
+                            if user_input[0:2] == "\x1b[":
+                                for i in range(4):
+                                    # assigment of arrow key value to wasd value
+                                    if user_input[2] == valid_inputs[i + 4][2]:
+                                        user_input = valid_inputs[i]
+                                        break
+                        elif version == "ics31":
+                            pass
+                        
+                        # Check if board position changed
+                        if game.check_board_moved(game_board, press) == False:
+                            print("Board hasn't changed. Please enter another move...")
+                            press = win.checkKey()
+                            continue
+                        # else, execute the user's move
+                        else:
+                            game_board = game.move_board(game_board, press)
+                            # NEED TO DISPLAY MOVEMENT OF PLAYER PIECE HERE...
+                        # Check if the user wins (NEED TO MODIFY)
+                        if game.check_user_win(game_board) and winners_mode == 0:
+                            game.print_board(game_board)
+                            print("Congratulations! You have won 2048!")
+                            z = 1
+                            while z:
+                                end_game_input = input("Would you like to continue playing? (Enter yes or no) ")
+                                if end_game_input == 'yes':
+                                    print("you have chosen to continue, Please enter a move...")
+                                    user_input = input()
+                                    z = 0
+                                elif end_game_input == 'no':
+                                    user_input = 'q'
+                                    z = 0
+                                else:
+                                    print("Please enter a proper choice")
+                            winners_mode = 1
+                            continue
+                        # place a random piece on the board
+                        row, col, val = game.computer_move(game_board)
+                        undrawBoard(pieces)
+                        updateBoardPieceTexts(pieces[1], game_board)
+                        drawComputerMove(row, col, val, pieces, game_board, win)
+                        drawBoard(pieces, win)
+                        # check to see if the game is over using the game_over function
+                        if game.game_over(game_board):
+                            print("Game Over! You have lost!")
+                            loss = 1
+                            drawMenuButtonsLoss(menu, win)
+                            gamestate = 1
+                            continue
+                        # show updated board using the print_board function
+                        game.print_board(game_board)
+                        print()
+                        # take user's turn
+                        press = win.checkKey()
+                    else:
+                        press = win.checkKey()
             # menu
             if gamestate == 1:
                 click = win.checkMouse()
@@ -467,16 +573,19 @@ def main():
                     in_game_widgets[1][0].setText("0")
                     gamestate = 2
                     continue
-                # resume
-                if checkButtonClick(click, menu[0][4]):
-                    undrawMenuButtons(menu)
-                    gamestate = 0
+                # we only display resume if it's not a loss
+                if loss != 1:
+                    # resume
+                    if checkButtonClick(click, menu[0][4]):
+                        undrawMenuButtons(menu)
+                        gamestate = 0
             # settings (from #2)
             if gamestate == 3:
-                settings = createSettingsButtons()
+                pass
             # new game (from #3)
             if gamestate == 2:
                 z = False
+    print("Goodbye")
     win.close()
 
     # console game
