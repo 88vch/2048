@@ -1,11 +1,11 @@
 # 2048 front-end (graphics)
 import time
-import graphics
+from assets import graphics
 import TwentyFourtyEightgameLogic as game
 
 
 """
-GameStates;
+GameStates (update);
 
 1. in-game
 2. menu popup rectangle
@@ -150,18 +150,19 @@ def createInGameTexts():
 def updateInGameTexts(game_board, texts, win):
     """Update score and best."""
     highest = -1
-    for element in game_board:
-        if element > highest:
-            highest = element
+    for row in game_board:
+        for element in row:
+            if element > highest:
+                highest = element
+    temp_score = texts[0]
+    texts[0].setText(str(highest))
+    temp_score.undraw()
+    texts[0].draw(win)
     if int(texts[0].getText()) > int(texts[1].getText()):
         temp_best = texts[1]
         texts[1].setText(str(highest))
         temp_best.undraw()
         texts[1].draw(win)
-    temp_score = texts[0]
-    texts[0].setText(str(highest))
-    temp_score.undraw()
-    texts[0].draw(win)
 
 
 def createInGameWidgets(win):
@@ -236,19 +237,27 @@ def undrawMenuButtons(menu):
 
 def drawMenuButtonsLoss(menu, win):
     """Draw menu buttons for a loss (no resume button)."""
-    for i in range(2):
-        for j in range(5):
-            if j != 4: 
-                menu[i][j].draw(win)
+    # 5 rectangles (minus the resume one)
+    for i in range(4):
+        if i != 4:
+            menu[0][i].draw(win)
+    # 4 texts (minus the resume one)
+    for i in range(3):
+        if i != 3:
+            menu[1][i].draw(win)
 
 
 
 def undrawMenuButtonsLoss(menu):
     """Undraw menu buttons for a loss (no resume button)."""
-    for i in range(2):
-        for j in range(5):
-            if j != 4: 
-                menu[i][j].undraw()
+    # 5 rectangles
+    for i in range(5):
+        if i != 4:
+            menu[0][i].undraw()
+    # 4 texts
+    for i in range(4):
+        if i != 3:
+            menu[1][i].undraw()
 
 
 def createSettingsButtons(win):
@@ -471,6 +480,7 @@ def main():
             drawBoard(pieces, win)
         # for drawComputerMove() and drawUserMove() we need functions (used repeatedly)
         # print console game
+        updateInGameTexts(game_board, in_game_widgets[1], win)
         game.print_board(game_board)
         print()
 
@@ -516,6 +526,7 @@ def main():
                         # else, execute the user's move
                         else:
                             game_board = game.move_board(game_board, press)
+                            updateInGameTexts(game_board, in_game_widgets[1], win)
                             # NEED TO DISPLAY MOVEMENT OF PLAYER PIECE HERE...
                         # Check if the user wins (NEED TO MODIFY)
                         if game.check_user_win(game_board) and winners_mode == 0:
