@@ -227,7 +227,6 @@ def drawMenuButtons(menu, win):
             element.draw(win)
 
 
-
 def undrawMenuButtons(menu):
     """Undraw menu buttons."""
     for rect_text in menu:
@@ -258,6 +257,72 @@ def undrawMenuButtonsLoss(menu):
     for i in range(4):
         if i != 3:
             menu[1][i].undraw()
+
+
+def createWinnerTexts():
+    """Create a list of texts for buttons (all we need to do is draw them)."""
+    texts = []
+    labels = ["Congratulations!", "(would you continue playing?)", "yes", "no"]
+
+    # main text
+    texts.append(graphics.Text(graphics.Point(20, 45), labels[0]))
+    texts[0].setFill("darkgoldenrod1")
+    texts[0].setStyle("bold")
+    texts[0].setSize(24)
+
+    # continue text
+    texts.append(graphics.Text(graphics.Point(20, 42.5), labels[1]))
+    texts[1].setFill("darkgoldenrod1")
+    texts[1].setStyle("bold")
+    texts[1].setSize(12)
+
+    # yes/no
+    for i in range(2, 4):
+        texts.append(graphics.Text(graphics.Point(14 + (i - 2)*12, 35), labels[i]))
+        texts[i].setFill("black")
+        texts[i].setStyle("bold")
+        texts[i].setSize(16)
+
+    return texts
+
+
+def createWinnerRectangles():
+    """Create a list of rectangles for buttons (all we need to do is draw them)."""
+    rectangles = []
+
+    # main rectangle
+    rectangles.append(graphics.Rectangle(graphics.Point(7, 30), graphics.Point(33, 47.5)))
+    rectangles[0].setFill("white")
+
+    # yes/no
+    for i in range(1, 3):
+        rectangles.append(graphics.Rectangle(graphics.Point(10 + (i - 1)*12, 32.5), graphics.Point(18 + (i - 1)*12, 37.5)))
+        rectangles[i].setFill("darkgoldenrod1")
+        rectangles[i].setOutline("black")
+    
+    return rectangles
+
+
+def createWinnerButtons():
+    """Create and Draw buttons when 2048 piece is obtained."""
+    rectangles = createWinnerRectangles()
+    texts = createWinnerTexts()
+
+    return (rectangles, texts)
+
+
+def drawWinnerButtons(winner, win):
+    """Draw menu buttons for a win."""
+    for lst in winner:
+        for i in range(len(lst)):
+            lst[i].draw(win)
+
+
+def undrawWinnerButtons(winner):
+    """Undraw menu buttons for a win."""
+    for lst in winner:
+        for i in range(len(lst)):
+            lst[i].undraw()
 
 
 def createSettingsButtons(win):
@@ -528,22 +593,28 @@ def main():
                             game_board = game.move_board(game_board, press)
                             updateInGameTexts(game_board, in_game_widgets[1], win)
                             # NEED TO DISPLAY MOVEMENT OF PLAYER PIECE HERE...
-                        # Check if the user wins (NEED TO MODIFY)
+                        # Check if the user wins
                         if game.check_user_win(game_board) and winners_mode == 0:
+                            undrawBoard(pieces)
+                            updateBoardPieceTexts(pieces[1], game_board) 
+                            drawBoard(pieces, win)
                             game.print_board(game_board)
                             print("Congratulations! You have won 2048!")
-                            z = 1
-                            while z:
-                                end_game_input = input("Would you like to continue playing? (Enter yes or no) ")
-                                if end_game_input == 'yes':
+                            winner = createWinnerButtons()
+                            drawWinnerButtons(winner, win)
+                            z1 = True
+                            # user has won: asking if user wants to keep playing...
+                            while z1:
+                                click = win.checkMouse()
+                                if checkButtonClick(click, winner[0][1]):
                                     print("you have chosen to continue, Please enter a move...")
-                                    user_input = input()
-                                    z = 0
-                                elif end_game_input == 'no':
-                                    user_input = 'q'
-                                    z = 0
-                                else:
-                                    print("Please enter a proper choice")
+                                    undrawWinnerButtons(winner)
+                                    break
+                                elif checkButtonClick(click, winner[0][2]):
+                                    undrawWinnerButtons(winner)
+                                    z = False
+                                    INGAME = 0
+                                    break
                             winners_mode = 1
                             continue
                         # place a random piece on the board
