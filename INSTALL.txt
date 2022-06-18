@@ -1,14 +1,11 @@
-TBD! NEED TO UPDATE
-
 System Requirements;
     1. python environment
 
-
 Setup and Configuration / Uninstalling;
     1. Download and extract the tar.gz file to access the program
-       Unpack by typing gtar -xvzf 2048.tar.gz
+       OR Unpack by typing gtar -xvzf 2048.tar.gz
     2. To run the program:
-        Type (in the 2048 directory): python3 TwentyFourtyEightgraphic.py
+        Type (in the 2048/src directory): python3 TwentyFourtyEightgraphic.py
     3. To uninstall the program:
-        Type "cd .." to exit the 2048 directory 
+        Type "cd .." twice to exit the src & 2048 directory (respectively) 
         Type "rm 2048" to remove the program
