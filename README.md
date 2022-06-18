@@ -7,13 +7,13 @@ Date: June 17, 2022
 **Instructions:**
     To install, uninstall, and run the program follow the instructions in the INSTALL file
 
-**General Game Instructions:**
-    i.  2048 presents with with a 4×4 grid.  
-    ii. When you start the game, there will be two “tiles” on the grid, each displaying the number 2 or 4.  
-    iii.You hit the arrow keys (or wasd) on your keyboard to move the tiles around and generate new tiles, which will also be valued at 2 or 4.  
-    iv. When two equal tiles collide, they combine to give you one greater tile that displays their sum.  
-    v.  The more you do this, the higher the tiles get and the more crowded the board becomes.  
-    vi. Your objective is to reach 2048 before the board fills up.  
+**General Game Instructions:**. 
+1. 2048 presents with with a 4×4 grid.  
+2. When you start the game, there will be two “tiles” on the grid, each displaying the number 2 or 4.  
+3. You hit the arrow keys (or wasd) on your keyboard to move the tiles around and generate new tiles, which will also be valued at 2 or 4.  
+4. When two equal tiles collide, they combine to give you one greater tile that displays their sum.  
+5. The more you do this, the higher the tiles get and the more crowded the board becomes.  
+6. Your objective is to reach 2048 before the board fills up.  
 
 **Author Notes;**
     This is definitely an unfinished version, however it's just a side project I was working on in my free time. 
