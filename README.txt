@@ -19,4 +19,4 @@ General Game Instructions:
 Author Notes;
 	This is definitely an unfinished version, however it's just a side project I was working on in my free time. 
 	Credit to UCI ICS 31 Spring '22 for the initial template/idea of the 2048 game in python (turning the console version into graphics was the idea for this). 
-	Credit to [gabrielecirulli](https://github.com/gabrielecirulli) for his [original version of the 2048 game](https://github.com/gabrielecirulli/2048)
+	Credit to gabrielecirulli - <a>https://github.com/gabrielecirulli</a> for his original version of the 2048 game - <a>https://github.com/gabrielecirulli/2048</a>
