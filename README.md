@@ -7,8 +7,7 @@ Date: June 17, 2022
 Instructions:
     To install, uninstall, and run the program follow the instructions in the INSTALL file
 
-# EDIT
-General Game Instructions:
+#General Game Instructions:
 	2048 presents with with a 4×4 grid. 
 	When you start the game, there will be two “tiles” on the grid, each displaying the number 2 or 4. 
 	You hit the arrow keys (or wasd) on your keyboard to move the tiles around and generate new tiles, which will also be valued at 2 or 4. 
