@@ -20,4 +20,8 @@ This is definitely an unfinished version, however it's just a side project I was
 
 Credit to UCI ICS 31 Spring '22 for the initial template/idea of the 2048 game in python (turning the console version into graphics was the idea for this).  
 
+Here is how the game looks like:
+<img width="399" alt="image" src="https://user-images.githubusercontent.com/102995003/195222351-01f06059-39d4-4cf6-b6cc-54145edf0bfd.png">
+
 Credit to <a href="https://github.com/gabrielecirulli">gabrielecirulli</a> for <a href="https://github.com/gabrielecirulli/2048">his original version of the 2048 game</a>
+
